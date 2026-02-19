@@ -25,6 +25,10 @@ try {
   console.error('❌ Erro ao carregar rotas:', error.message);
 }
 
+// Rotas de clientes dados
+const clientesRoutes = require('./routes/clientes');
+app.use('/api/clientes', clientesRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
