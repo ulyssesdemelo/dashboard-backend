@@ -29,6 +29,10 @@ try {
 const clientesRoutes = require('./routes/clientes');
 app.use('/api/clientes', clientesRoutes);
 
+// Rotas de Notificações Flutter - Mobile Firebase Google
+const notificationsRoutes = require('./routes/notifications');
+app.use('/api/notifications', notificationsRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
