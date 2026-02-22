@@ -12,13 +12,20 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permite requisições sem origin (ex: Postman, mobile apps)
+    // Permite requisições sem origin (Postman, apps mobile)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error('Not allowed by CORS'), false);
+    // Permite origens na lista
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
     }
-    return callback(null, true);
+    
+    // Permite qualquer IP local (192.168.x.x ou 10.x.x.x)
+    if (origin.match(/^http:\/\/(192\.168\.|10\.|172\.16\.)/)) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'), false);
   },
   credentials: true,
 }));
