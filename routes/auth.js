@@ -6,7 +6,7 @@ const pool = require('../config/database');
 const authMiddleware = require('../middleware/auth');
 
 // ROTA: Registrar novo usuário
-router.post('/register', async (req, res) => {
+router.post('/register', authMiddleware, async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
