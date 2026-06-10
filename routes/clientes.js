@@ -51,9 +51,11 @@ router.get('/:id', authMiddleware, async (req, res) => {
 // ROTA: Criar novo cliente
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const {
+const {
       nome, sobrenome, whatsapp, email, cpf, data_nascimento,
-      logradouro, numero, cidade, estado, cep, observacoes
+      logradouro, numero, cidade, estado, cep, observacoes,
+      passaporte_numero, passaporte_emissao, passaporte_vencimento,
+      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento
     } = req.body;
 
     // Validação: nome e sobrenome são obrigatórios
@@ -66,15 +68,21 @@ router.post('/', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Informe pelo menos WhatsApp ou e-mail' });
     }
 
-    const result = await pool.query(
+const result = await pool.query(
       `INSERT INTO clientes
         (nome, sobrenome, whatsapp, email, cpf, data_nascimento,
-         logradouro, numero, cidade, estado, cep, observacoes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+         logradouro, numero, cidade, estado, cep, observacoes,
+         passaporte_numero, passaporte_emissao, passaporte_vencimento,
+         rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+               $13, $14, $15, $16, $17, $18, $19, $20)
        RETURNING *`,
       [nome, sobrenome, whatsapp || null, email || null, cpf || null,
        data_nascimento || null, logradouro || null, numero || null,
-       cidade || null, estado || null, cep || null, observacoes || null]
+       cidade || null, estado || null, cep || null, observacoes || null,
+       passaporte_numero || null, passaporte_emissao || null, passaporte_vencimento || null,
+       rg_cnh || null, visto_tipo || null, visto_vencimento || null,
+       seguro_ativo || false, seguro_vencimento || null]
     );
 
     res.status(201).json({
@@ -95,26 +103,34 @@ router.post('/', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const {
+const {
       nome, sobrenome, whatsapp, email, cpf, data_nascimento,
-      logradouro, numero, cidade, estado, cep, ativo, observacoes
+      logradouro, numero, cidade, estado, cep, ativo, observacoes,
+      passaporte_numero, passaporte_emissao, passaporte_vencimento,
+      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento
     } = req.body;
 
     if (!nome || !sobrenome) {
       return res.status(400).json({ error: 'Nome e sobrenome são obrigatórios' });
     }
 
-    const result = await pool.query(
+const result = await pool.query(
       `UPDATE clientes SET
         nome = $1, sobrenome = $2, whatsapp = $3, email = $4, cpf = $5,
         data_nascimento = $6, logradouro = $7, numero = $8, cidade = $9,
-        estado = $10, cep = $11, ativo = $12, observacoes = $13
-       WHERE id = $14
+        estado = $10, cep = $11, ativo = $12, observacoes = $13,
+        passaporte_numero = $14, passaporte_emissao = $15, passaporte_vencimento = $16,
+        rg_cnh = $17, visto_tipo = $18, visto_vencimento = $19,
+        seguro_ativo = $20, seguro_vencimento = $21
+       WHERE id = $22
        RETURNING *`,
       [nome, sobrenome, whatsapp || null, email || null, cpf || null,
        data_nascimento || null, logradouro || null, numero || null,
        cidade || null, estado || null, cep || null,
-       ativo, observacoes || null, id]
+       ativo, observacoes || null,
+       passaporte_numero || null, passaporte_emissao || null, passaporte_vencimento || null,
+       rg_cnh || null, visto_tipo || null, visto_vencimento || null,
+       seguro_ativo || false, seguro_vencimento || null, id]
     );
 
     if (result.rows.length === 0) {
