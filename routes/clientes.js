@@ -55,7 +55,8 @@ const {
       nome, sobrenome, whatsapp, email, cpf, data_nascimento,
       logradouro, numero, cidade, estado, cep, observacoes,
       passaporte_numero, passaporte_emissao, passaporte_vencimento,
-      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento
+      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento,
+      descendente_japones, geracao, nivel_japones, ja_foi_japao, vezes_japao
     } = req.body;
 
     // Validação: nome e sobrenome são obrigatórios
@@ -73,16 +74,18 @@ const result = await pool.query(
         (nome, sobrenome, whatsapp, email, cpf, data_nascimento,
          logradouro, numero, cidade, estado, cep, observacoes,
          passaporte_numero, passaporte_emissao, passaporte_vencimento,
-         rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-               $13, $14, $15, $16, $17, $18, $19, $20)
+         rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento,
+         descendente_japones, geracao, nivel_japones, ja_foi_japao, vezes_japao)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+       $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
        RETURNING *`,
       [nome, sobrenome, whatsapp || null, email || null, cpf || null,
        data_nascimento || null, logradouro || null, numero || null,
        cidade || null, estado || null, cep || null, observacoes || null,
        passaporte_numero || null, passaporte_emissao || null, passaporte_vencimento || null,
-       rg_cnh || null, visto_tipo || null, visto_vencimento || null,
-       seguro_ativo || false, seguro_vencimento || null]
+       rg_cnh || null, visto_tipo || null, visto_vencimento || null, seguro_ativo || false, 
+       seguro_vencimento || null, descendente_japones || false, geracao || null,
+       nivel_japones || null, ja_foi_japao || false, vezes_japao || 0]
     );
 
     res.status(201).json({
@@ -107,7 +110,8 @@ const {
       nome, sobrenome, whatsapp, email, cpf, data_nascimento,
       logradouro, numero, cidade, estado, cep, ativo, observacoes,
       passaporte_numero, passaporte_emissao, passaporte_vencimento,
-      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento
+      rg_cnh, visto_tipo, visto_vencimento, seguro_ativo, seguro_vencimento,
+      descendente_japones, geracao, nivel_japones, ja_foi_japao, vezes_japao
     } = req.body;
 
     if (!nome || !sobrenome) {
@@ -121,8 +125,9 @@ const result = await pool.query(
         estado = $10, cep = $11, ativo = $12, observacoes = $13,
         passaporte_numero = $14, passaporte_emissao = $15, passaporte_vencimento = $16,
         rg_cnh = $17, visto_tipo = $18, visto_vencimento = $19,
-        seguro_ativo = $20, seguro_vencimento = $21
-       WHERE id = $22
+        seguro_ativo = $20, seguro_vencimento = $21, descendente_japones = $22, geracao = $23, 
+        nivel_japones = $24, ja_foi_japao = $25, vezes_japao = $26
+       WHERE id = $27
        RETURNING *`,
       [nome, sobrenome, whatsapp || null, email || null, cpf || null,
        data_nascimento || null, logradouro || null, numero || null,
@@ -130,7 +135,9 @@ const result = await pool.query(
        ativo, observacoes || null,
        passaporte_numero || null, passaporte_emissao || null, passaporte_vencimento || null,
        rg_cnh || null, visto_tipo || null, visto_vencimento || null,
-       seguro_ativo || false, seguro_vencimento || null, id]
+       seguro_ativo || false, seguro_vencimento || null,
+       descendente_japones || false, geracao || null, nivel_japones || null,
+       ja_foi_japao || false, vezes_japao || 0, id]
     );
 
     if (result.rows.length === 0) {

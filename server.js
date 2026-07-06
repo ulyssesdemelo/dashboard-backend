@@ -7,6 +7,7 @@ const app = express();
 // Middlewares - CORS permitindo múltiplas origens
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:3005',
   'https://dashboard-frontend-sigma-gilt.vercel.app'
 ];
 
