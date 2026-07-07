@@ -127,4 +127,33 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
+// ROTA: Atualizar perfil do usuário logado (nome)
+router.put('/profile', authMiddleware, async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    // Validação
+    if (!name || name.trim().length < 3) {
+      return res.status(400).json({ error: 'Nome deve ter no mínimo 3 caracteres' });
+    }
+
+    const result = await pool.query(
+      'UPDATE users SET name = $1 WHERE id = $2 RETURNING id, name, email, created_at',
+      [name.trim(), req.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    res.json({
+      message: 'Perfil atualizado com sucesso!',
+      user: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar perfil:', error);
+    res.status(500).json({ error: 'Erro ao atualizar perfil' });
+  }
+});
+
 module.exports = router;
